@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:maplace/utils/theme.dart';
-import 'package:maplace/widets/home.dart';
+import 'package:maplace/widgets/home.dart';
 
 void main() {
   runApp(
