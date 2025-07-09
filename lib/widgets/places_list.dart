@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:maplace/models/place.dart';
+import 'package:maplace/screens/places_details.dart';
 import 'package:maplace/utils/theme.dart';
 
 class PlacesList extends StatelessWidget {
@@ -13,9 +14,7 @@ class PlacesList extends StatelessWidget {
       return Center(
         child: Text(
           'No places added yet',
-          style: TextStyle(
-            color: theme.colorScheme.onSurface,
-          ),
+          style: TextStyle(color: theme.colorScheme.onSurface),
         ),
       );
     } else {
@@ -23,6 +22,13 @@ class PlacesList extends StatelessWidget {
         itemCount: places.length,
         itemBuilder:
             (ctx, index) => ListTile(
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (ctx) => PlaceDetailsScreen(places[index]),
+                  ),
+                );
+              },
               title: Text(
                 places[index].title,
                 style: theme.textTheme.titleMedium!.copyWith(
