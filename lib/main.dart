@@ -5,7 +5,7 @@ import 'package:maplace/screens/places.dart';
 
 void main() {
   runApp(
-    ProviderScope(child: const App()),
+    const ProviderScope(child: App()),
   );
 }
 
