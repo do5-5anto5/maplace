@@ -1,14 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:maplace/providers/user_places.dart';
 
-class NewPlaceScreen extends StatefulWidget {
+class NewPlaceScreen extends ConsumerStatefulWidget {
   const NewPlaceScreen({super.key});
 
   @override
-  State<NewPlaceScreen> createState() => _NewPlaceScreenState();
+  ConsumerState<NewPlaceScreen> createState() => _NewPlaceScreenState();
 }
 
-class _NewPlaceScreenState extends State<NewPlaceScreen> {
+class _NewPlaceScreenState extends ConsumerState<NewPlaceScreen> {
   final _titleController = TextEditingController();
+
+  void _savePlace() {
+    final enteredTitle = _titleController.text;
+
+    if (enteredTitle.isEmpty && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please enter a title'),
+        ),
+      );
+      return;
+    }
+
+    ref.read(userPlacesProvider.notifier).addPlace(enteredTitle);
+    Navigator.of(context).pop();
+  }
 
   @override
   void dispose() {
@@ -28,17 +46,18 @@ class _NewPlaceScreenState extends State<NewPlaceScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               TextField(
-                decoration: const InputDecoration(labelText: 'Title',),
+                decoration: const InputDecoration(labelText: 'Title'),
                 controller: _titleController,
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.onSurface,
-                  decorationColor: Theme.of(context).colorScheme.onSurfaceVariant,
+                  decorationColor:
+                      Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
                 cursorColor: Colors.white,
               ),
               SizedBox(height: 16),
               ElevatedButton.icon(
-                onPressed: () {},
+                onPressed: _savePlace,
                 icon: Icon(Icons.add),
                 label: Text('Add Place'),
               ),
