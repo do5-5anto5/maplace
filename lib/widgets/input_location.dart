@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:location/location.dart';
+import 'package:maplace/secrets/secrets.dart' as Secrets;
 
 class InputLocation extends StatefulWidget {
   const InputLocation({super.key});
@@ -13,7 +17,6 @@ class _InputLocationState extends State<InputLocation> {
   var _isGettingLocation = false;
 
   void _getCurrentLocation() async {
-
     Location location = Location();
 
     bool serviceEnabled;
@@ -40,13 +43,20 @@ class _InputLocationState extends State<InputLocation> {
       }
     }
 
+    locationData = await location.getLocation();
+    final lat = locationData.latitude;
+    final lng = locationData.longitude;
+
+    final url = Uri.parse(
+      'https://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$lng&key=${Secrets.googleMapsApiKey}',
+    );
+    final response = await http.get(url);
+    final responseData = json.decode(response.body);
+    final address = responseData['results'][0]['formatted_address'];
+
     setState(() {
       _isGettingLocation = false;
     });
-
-    locationData = await location.getLocation();
-    print(locationData.latitude);
-    print(locationData.longitude);
   }
 
   @override
