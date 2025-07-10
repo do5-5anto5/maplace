@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:maplace/providers/user_places.dart';
 
 import 'package:maplace/widgets/image_input.dart';
+import 'package:maplace/widgets/input_location.dart';
 
 class NewPlaceScreen extends ConsumerStatefulWidget {
   const NewPlaceScreen({super.key});
@@ -61,9 +62,11 @@ class _NewPlaceScreenState extends ConsumerState<NewPlaceScreen> {
                 cursorColor: Colors.white,
               ),
               // Image Input
-              const SizedBox(height: 16),
+              const SizedBox(height: 10),
               ImageInput(onPickImage: (image) => _selectedImage = image
               ),
+              const SizedBox(height: 10),
+              InputLocation(),
               const SizedBox(height: 16),
               ElevatedButton.icon(
                 onPressed: _savePlace,
