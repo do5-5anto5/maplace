@@ -4,7 +4,8 @@ import 'package:http/http.dart' as http;
 import 'package:location/location.dart';
 
 import 'package:maplace/models/place.dart';
-import 'package:maplace/secrets/secrets.dart' as Secrets;
+import 'package:maplace/secrets/secrets.dart' as secrets;
+import 'package:maplace/utils/location_image_url.dart';
 
 class InputLocation extends StatefulWidget {
   const InputLocation({super.key, required this.onSelectPlace});
@@ -20,10 +21,7 @@ class _InputLocationState extends State<InputLocation> {
   var _isGettingLocation = false;
 
   String get locationImage {
-    if (_pickedLocation == null) return '';
-    final lat = _pickedLocation!.latitude;
-    final lng = _pickedLocation!.longitude;
-    return 'https://maps.googleapis.com/maps/api/staticmap?center=$lat,$lng&zoom=13&size=600x300&maptype=roadmap&markers=color:red%7Clabel:S%7C$lat,$lng&key=${Secrets.googleMapsApiKey}';
+    return LocationImageUrl().locationImage(_pickedLocation);
   }
 
   void _getCurrentLocation() async {
@@ -62,7 +60,7 @@ class _InputLocationState extends State<InputLocation> {
     }
 
     final url = Uri.parse(
-      'https://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$lng&key=${Secrets.googleMapsApiKey}',
+      'https://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$lng&key=${secrets.googleMapsApiKey}',
     );
     final response = await http.get(url);
     final responseData = json.decode(response.body);
