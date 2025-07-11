@@ -7,7 +7,9 @@ import 'package:maplace/models/place.dart';
 import 'package:maplace/secrets/secrets.dart' as Secrets;
 
 class InputLocation extends StatefulWidget {
-  const InputLocation({super.key});
+  const InputLocation({super.key, required this.onSelectPlace});
+
+  final void Function(PlaceLocation location) onSelectPlace;
 
   @override
   State<InputLocation> createState() => _InputLocationState();
@@ -74,6 +76,8 @@ class _InputLocationState extends State<InputLocation> {
       );
       _isGettingLocation = false;
     });
+
+    widget.onSelectPlace(_pickedLocation!);
   }
 
   @override
