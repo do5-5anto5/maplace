@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:maplace/models/place.dart';
 
 import 'package:maplace/providers/user_places.dart';
 
@@ -15,22 +16,24 @@ class NewPlaceScreen extends ConsumerStatefulWidget {
 }
 
 class _NewPlaceScreenState extends ConsumerState<NewPlaceScreen> {
+  // These variables are here to help with states
   final _titleController = TextEditingController();
   File? _selectedImage;
+  PlaceLocation? _selectedLocation;
 
   void _savePlace() {
     final enteredTitle = _titleController.text;
 
-    if (enteredTitle.isEmpty && mounted || _selectedImage == null && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please enter a title'),
-        ),
-      );
+    if (mounted && (enteredTitle.isEmpty  || _selectedImage == null || _selectedLocation == null)) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Please fill all information.')));
       return;
     }
 
-    ref.read(userPlacesProvider.notifier).addPlace(enteredTitle, _selectedImage!);
+    ref
+        .read(userPlacesProvider.notifier)
+        .addPlace(enteredTitle, _selectedImage!, _selectedLocation!);
     Navigator.of(context).pop();
   }
 
@@ -63,10 +66,11 @@ class _NewPlaceScreenState extends ConsumerState<NewPlaceScreen> {
               ),
               // Image Input
               const SizedBox(height: 10),
-              ImageInput(onPickImage: (image) => _selectedImage = image
-              ),
+              ImageInput(onPickImage: (image) => _selectedImage = image),
               const SizedBox(height: 10),
-              InputLocation(),
+              InputLocation(
+                onSelectPlace: (location) => _selectedLocation = location,
+              ),
               const SizedBox(height: 16),
               ElevatedButton.icon(
                 onPressed: _savePlace,

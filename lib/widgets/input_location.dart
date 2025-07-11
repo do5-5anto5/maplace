@@ -4,10 +4,13 @@ import 'package:http/http.dart' as http;
 import 'package:location/location.dart';
 
 import 'package:maplace/models/place.dart';
-import 'package:maplace/secrets/secrets.dart' as Secrets;
+import 'package:maplace/secrets/secrets.dart' as secrets;
+import 'package:maplace/utils/location_image_url.dart';
 
 class InputLocation extends StatefulWidget {
-  const InputLocation({super.key});
+  const InputLocation({super.key, required this.onSelectPlace});
+
+  final void Function(PlaceLocation location) onSelectPlace;
 
   @override
   State<InputLocation> createState() => _InputLocationState();
@@ -16,6 +19,10 @@ class InputLocation extends StatefulWidget {
 class _InputLocationState extends State<InputLocation> {
   PlaceLocation? _pickedLocation;
   var _isGettingLocation = false;
+
+  String get locationImage {
+    return LocationImageUrl().locationImage(_pickedLocation);
+  }
 
   void _getCurrentLocation() async {
     Location location = Location();
@@ -53,7 +60,7 @@ class _InputLocationState extends State<InputLocation> {
     }
 
     final url = Uri.parse(
-      'https://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$lng&key=${Secrets.googleMapsApiKey}',
+      'https://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$lng&key=${secrets.googleMapsApiKey}',
     );
     final response = await http.get(url);
     final responseData = json.decode(response.body);
@@ -67,6 +74,8 @@ class _InputLocationState extends State<InputLocation> {
       );
       _isGettingLocation = false;
     });
+
+    widget.onSelectPlace(_pickedLocation!);
   }
 
   @override
@@ -79,6 +88,15 @@ class _InputLocationState extends State<InputLocation> {
         decorationColor: Theme.of(context).colorScheme.onSurfaceVariant,
       ),
     );
+
+    if (_pickedLocation != null) {
+      previewContent = Image.network(
+        locationImage,
+        fit: BoxFit.cover,
+        height: double.infinity,
+        width: double.infinity,
+      );
+    }
 
     if (_isGettingLocation) {
       previewContent = const CircularProgressIndicator();
