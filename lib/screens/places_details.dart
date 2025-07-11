@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:maplace/models/place.dart';
+import 'package:maplace/screens/map.dart';
 import 'package:maplace/utils/location_image_url.dart';
 
 class PlaceDetailsScreen extends ConsumerWidget {
   const PlaceDetailsScreen(this.place, {super.key});
+
   final Place place;
 
   @override
@@ -28,9 +30,22 @@ class PlaceDetailsScreen extends ConsumerWidget {
             right: 0,
             child: Column(
               children: [
-                CircleAvatar(
-                  radius: 70,
-                  backgroundImage: NetworkImage(locationImage),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder:
+                            (ctx) => MapScreen(
+                              location: place.location!,
+                              isSelecting: false,
+                            ),
+                      ),
+                    );
+                  },
+                  child: CircleAvatar(
+                    radius: 70,
+                    backgroundImage: NetworkImage(locationImage),
+                  ),
                 ),
                 Container(
                   alignment: Alignment.center,
@@ -39,12 +54,10 @@ class PlaceDetailsScreen extends ConsumerWidget {
                     vertical: 16,
                   ),
                   decoration: const BoxDecoration(
-                    gradient: LinearGradient(colors: [
-                      Colors.transparent,
-                      Colors.black54,
-                    ],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
+                    gradient: LinearGradient(
+                      colors: [Colors.transparent, Colors.black54],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
                     ),
                   ),
                   child: Text(
